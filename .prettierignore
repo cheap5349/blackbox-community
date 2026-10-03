@@ -1,0 +1,8 @@
+node_modules
+dist
+public
+server/uploads
+package-lock.json
+
+# 文档按语义换行，交给 Prettier 重排只会制造无意义的 diff
+*.md

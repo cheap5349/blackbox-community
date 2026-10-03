@@ -1,0 +1,15 @@
+# 统一换行：仓库内一律 LF（与 .prettierrc.json 的 endOfLine: lf 保持一致），
+# 否则 Windows 上 core.autocrlf=true 会反复把文件在 LF/CRLF 之间来回改。
+* text=auto eol=lf
+
+# 二进制资源不参与换行转换
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.mp3 binary
+*.mp4 binary
+*.woff binary
+*.woff2 binary

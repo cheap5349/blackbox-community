@@ -1,0 +1,41 @@
+# 依赖
+node_modules/
+
+# 构建产物
+dist/
+dist-ssr/
+
+# 环境变量（含数据库口令与 JWT 密钥，绝不入库）
+.env
+.env.local
+.env.*.local
+
+# 运行时数据与日志
+logs/
+*.log
+npm-debug.log*
+server/uploads/
+server/videos/
+public/videos/
+
+# 本地音频：默认不入库，避免把无授权的音乐推进公开仓库
+# 如果确认音频是你自己的作品或有授权，删掉下面两行再提交即可（或临时用 git add -f）
+public/audio/*.mp3
+public/audio/*.m4a
+public/audio/*.flac
+public/audio/*.wav
+
+# 测试与缓存
+coverage/
+.vitest/
+.cache/
+
+# 编辑器与系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# 本地临时文件
+*.tmp
+*.local

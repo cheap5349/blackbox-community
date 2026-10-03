@@ -1,0 +1,11 @@
+node_modules
+dist
+server/uploads
+public/videos
+.env
+*.log
+.git
+Dockerfile
+.dockerignore
+docker-compose.yml
+ecosystem.config.cjs
