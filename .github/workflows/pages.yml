@@ -1,0 +1,53 @@
+name: 部署静态演示到 GitHub Pages
+
+# GitHub Pages 只能托管静态文件，而本项目后端是 Express + MySQL，
+# 所以这里用 VITE_DEMO=1 构建一版「内置示例数据」的只读演示：
+# 开场动画、主题背景、图标体系、性能徽标与唱片机都能看到，
+# 登录 / 发帖 / 点赞等写入操作会给出明确提示而不是报 404。
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: 构建静态演示版
+        run: npm run build
+        env:
+          VITE_DEMO: '1'
+          # 项目站点部署在 /<仓库名>/ 下，前端路由与静态资源都要带这个前缀
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/
+      - name: 生成 SPA 深链接回退页
+        run: |
+          cp dist/index.html dist/404.html
+          touch dist/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

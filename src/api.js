@@ -1,10 +1,14 @@
 // 请求封装：统一处理认证头、错误、401 会话失效（与 store 解耦，通过回调通知）
+import { DEMO_MODE, demoApi } from './demo.js'
+
 let invalidator = null
 export const setUnauthorizedHandler = (fn) => {
   invalidator = fn
 }
 
 export async function api(url, options = {}) {
+  // 静态演示版（GitHub Pages 等无后端环境）：走内置示例数据，读得到、写不了
+  if (DEMO_MODE) return demoApi(url, options)
   const headers = options.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }
   if (localStorage.token) headers.Authorization = `Bearer ${localStorage.token}`
   const res = await fetch(`/api${url}`, { ...options, headers })

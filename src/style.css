@@ -7057,3 +7057,49 @@ html[data-theme='dark'] .bgm-hint code {
 .flip-down {
   transform: rotate(180deg);
 }
+
+/* ===== 静态演示版角标（只在 VITE_DEMO=1 的构建里挂载）=====
+   挂在 .community-page 之外、position: fixed，所以它不会随文档滚动；
+   pointer-events: none 保证它永远不会挡住底下的按钮。 */
+
+.demo-notice {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  z-index: 950;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  max-width: min(88vw, 560px);
+  padding: 8px 14px;
+  border: 1px solid #e9d8e2;
+  border-radius: 999px;
+  background: #fffafce6;
+  backdrop-filter: blur(10px) saturate(1.1);
+  color: #7a5b74;
+  font-size: 12.5px;
+  line-height: 1.4;
+  box-shadow: 0 6px 20px #6d51401a;
+  pointer-events: none;
+}
+
+html[data-theme='dark'] .demo-notice {
+  border-color: #3a3355;
+  background: #16122899;
+  color: #cbc3e4;
+}
+
+/* 窄屏把角标抬到唱片机（左下角 62px 圆盘）上方，避免两者叠在一起 */
+@media (max-width: 760px) {
+  .demo-notice {
+    left: 12px;
+    right: 12px;
+    bottom: 92px;
+    max-width: none;
+    transform: none;
+    justify-content: center;
+    text-align: center;
+    font-size: 11.5px;
+  }
+}

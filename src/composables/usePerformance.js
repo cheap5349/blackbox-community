@@ -3,7 +3,9 @@
 import { ref } from 'vue'
 import { averageLatency, fpsFromFrames, latencyGrade, measureLatency } from '../performance.js'
 
-export const LATENCY_PING_URL = '/api/health'
+// 静态演示版没有 /api/health，改ping 站点自身的静态资源；
+// 量到的依然是真实往返时间，只是对象从接口换成了静态托管。
+export const LATENCY_PING_URL = import.meta.env?.VITE_DEMO === '1' ? import.meta.env.BASE_URL : '/api/health'
 const FPS_TICK_MS = 1000
 const LATENCY_INTERVAL_MS = 5000
 const LATENCY_SAMPLES = 8

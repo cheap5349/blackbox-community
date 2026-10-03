@@ -21,6 +21,8 @@ import HeaderBar from './components/HeaderBar.vue'
 import NotificationsPanel from './components/NotificationsPanel.vue'
 import BgmPlayer from './components/BgmPlayer.vue'
 import AppIcon from './components/AppIcon.vue'
+import DemoNotice from './components/DemoNotice.vue'
+import { DEMO_MODE } from './demo.js'
 
 const router = useRouter()
 const route = useRoute()
@@ -122,6 +124,8 @@ onBeforeUnmount(() => {
   <!-- 左下角背景音乐唱片机：挂在 .community-page 之外，避免页面容器残留的 transform
        让它退化为随文档滚动（那会变成"滑到底才看得见"） -->
   <BgmPlayer v-if="appReady" />
+  <!-- 静态演示版角标：同样挂在容器之外，理由同上 -->
+  <DemoNotice v-if="DEMO_MODE" />
   <ThemeTransition />
 
   <Transition name="boot-fade">

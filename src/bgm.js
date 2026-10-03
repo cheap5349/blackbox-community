@@ -6,9 +6,11 @@ export const BGM_VOLUME_KEY = 'heibox.bgm.volume'
 export const BGM_DEFAULT_VOLUME = 0.5
 
 // 曲目来源：使用者自己往 public/audio/ 里放文件。
-export const PLAYLIST_URL = '/audio/playlist.json'
+// 路径带上 Vite 的 BASE_URL，子路径部署（GitHub Pages 的 /<repo>/）才不会 404。
+const BASE = import.meta.env?.BASE_URL || '/'
+export const PLAYLIST_URL = `${BASE}audio/playlist.json`
 export const AUDIO_DIR_HINT = 'public/audio'
-export const FALLBACK_TRACK = { title: '黑盒电台', src: '/audio/bgm.mp3' }
+export const FALLBACK_TRACK = { title: '黑盒电台', src: `${BASE}audio/bgm.mp3` }
 
 /** 音量夹在 0 ~ 1；非法输入回落到默认音量。 */
 export function clampVolume(value) {

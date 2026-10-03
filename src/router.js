@@ -25,7 +25,9 @@ const routes = [
 ]
 
 export const router = createRouter({
-  history: createWebHistory(),
+  // base 取 Vite 的 BASE_URL：GitHub Pages 部署在 /<repo>/ 子路径下时，
+  // 路由必须带上同样的前缀，否则站内跳转会掉到域名根目录。
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 })
 

@@ -266,4 +266,12 @@ describe('样式表守卫', () => {
     expect(fall, '找不到花瓣飘落关键帧').not.toBe('')
     expect(fall, '花瓣要左右侧摆而不是一条直线落下去').toContain('var(--sway')
   })
+
+  it('静态演示角标固定在视口上，且不拦截点击', () => {
+    const notice = ruleBlock(css, '\n.demo-notice')
+
+    expect(notice, '找不到 .demo-notice 规则').not.toBe('')
+    expect(notice, '演示角标要固定在视口，不能随文档滚动').toContain('position: fixed')
+    expect(notice, '演示角标不能挡住下面的按钮').toContain('pointer-events: none')
+  })
 })
