@@ -38,7 +38,9 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          # Node 20 的测试运行器不支持 glob 模式，`node --test server/test/*.test.js`
+          # 会被当成字面路径而报 Could not find；22 起原生支持 glob。
+          node-version: 22
           cache: npm
 
       - name: 安装依赖
