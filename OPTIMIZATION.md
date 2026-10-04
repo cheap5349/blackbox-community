@@ -71,7 +71,7 @@
 - 举报闭环：`reports` 表、用户端提交、管理端「举报」页签（待处理/已忽略/已删除 + 搜索）
 - 用户可编辑自己的帖子（个人中心与详情页入口）
 - 前端拆分：`App.vue` 瘦身为外壳，10 个视图组件 + `store.js` + composables，路由懒加载
-- 测试：后端 `node:test + supertest` 59 条、前端 `vitest` 201 条（17 个文件，含样式守卫与模板编译守卫），全绿
+- 测试：后端 `node:test + supertest` 59 条、前端 `vitest` 235 条（19 个文件，含样式守卫与模板编译守卫），全绿
 - 工程质量：ESLint 9 flat config + Prettier，`lint`/`lint:fix`/`format`/`format:check` 脚本；GitHub Actions 在 push/PR 上跑格式检查、lint、前后端测试与生产构建
 - 文档体系：`README.md` + `docs/ARCHITECTURE.md`、`docs/CONFIGURATION.md`、`docs/API.md`、`docs/DEPLOYMENT.md`、`docs/BACKUP-RESTORE.md`、`docs/CONTRIBUTING.md`
 - 部署：Dockerfile + docker-compose + PM2 配置
@@ -126,7 +126,7 @@
 | 项 | 现状 | 建议 | 验收标准 |
 |---|---|---|---|
 | 前端拆分 | ✅ 已完成（10 视图 + store + composables） | — | 单文件 < 400 行 |
-| 测试 | ✅ 后端 59 + 前端 201 条（17 个文件） | 补管理后台与通知的组件级测试 | `npm test` 全绿 |
+| 测试 | ✅ 后端 59 + 前端 235 条（19 个文件） | 补管理后台与通知的组件级测试 | `npm test` 全绿 |
 | CI | ✅ `.github/workflows/ci.yml`：MySQL service → 格式检查 → lint → 前后端测试 → 生产构建 | — | 每个 PR 自动跑全量门禁 |
 | 错误处理统一 | 大量 DB 异常归为「数据库未连接」 | 结构化 `{ code, message }`（`api.js` 已透传 `code`），服务端记日志 | 每个接口错误码可定位到真实原因 |
 | Lint / Format | ✅ ESLint 9 flat config + Prettier（`lint`/`lint:fix`/`format`/`format:check`） | 可按需再接入 stylelint 检查 CSS | `npm run lint` 与 `format:check` 通过 |

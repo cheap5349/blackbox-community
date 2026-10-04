@@ -275,26 +275,42 @@ describe('样式表守卫', () => {
     expect(notice, '演示角标不能挡住下面的按钮').toContain('pointer-events: none')
   })
 
-  it('发帖界面是一张柔和的纸：圆角 + 轻阴影', () => {
-    const page = ruleBlock(css, '\n.write-page {')
+  it('发帖界面是左编辑 + 右预览两列，编辑器是一张柔和的纸', () => {
+    const shell = ruleBlock(css, '\n.write-shell {')
 
-    expect(page, '找不到 .write-page 规则').not.toBe('')
+    expect(shell, '找不到 .write-shell 规则').not.toBe('')
+    expect(shell, '发帖区要分成编辑与侧栏两列').toContain('grid')
+
+    const page = ruleBlock(css, '\n.write-editor {')
+
+    expect(page, '找不到 .write-editor 规则').not.toBe('')
     expect(page, '编辑器要有圆角').toContain('border-radius')
     expect(page, '编辑器要有柔和投影，不能是硬边框卡片').toContain('box-shadow')
+
+    const side = ruleBlock(css, '\n.write-side {')
+
+    expect(side, '找不到右栏 .write-side 规则').not.toBe('')
+    expect(side, '右栏要跟着滚动固定在视口里').toContain('sticky')
   })
 
-  it('配图用拖拽区 + 缩略图网格，且不再有视频入口的样式残留', () => {
+  it('配图用拖拽区 + 缩略图，且不再有视频/旧版样式残留', () => {
     const drop = ruleBlock(css, '\n.write-drop {')
 
     expect(drop, '找不到拖拽上传区 .write-drop 规则').not.toBe('')
     expect(drop, '上传区要一眼看出可以拖东西进来').toContain('dashed')
 
-    const previews = ruleBlock(css, '\n.write-previews {')
+    const thumbs = ruleBlock(css, '\n.write-thumbs {')
 
-    expect(previews, '找不到缩略图容器 .write-previews 规则').not.toBe('')
-    expect(previews, '缩略图要用网格排布').toContain('grid')
+    expect(thumbs, '找不到缩略图容器 .write-thumbs 规则').not.toBe('')
+    expect(thumbs, '缩略图要排成一行可以换行').toContain('flex-wrap')
+
+    const remove = ruleBlock(css, '\n.write-thumb-remove {')
+
+    expect(remove, '找不到缩略图删除按钮规则').not.toBe('')
 
     expect(css, '旧的 .write-target 提示条样式没清干净').not.toContain('.write-target')
+    expect(css, '旧的单列 .write-page 样式没清干净').not.toContain('.write-page {')
+    expect(css, '旧的 .write-previews 样式没清干净').not.toContain('.write-previews')
   })
 
   it('发布按钮有真正的禁用态，禁用时不会继续扫光', () => {
@@ -311,9 +327,9 @@ describe('样式表守卫', () => {
   })
 
   it('深色主题下发帖界面有自己的底色，不是白纸', () => {
-    const dark = ruleBlock(css, "html[data-theme='dark'] .write-page {")
+    const dark = ruleBlock(css, "html[data-theme='dark'] .write-editor")
 
-    expect(dark, '找不到深色主题的 .write-page 覆盖').not.toBe('')
+    expect(dark, '找不到深色主题的 .write-editor 覆盖').not.toBe('')
     expect(dark).toContain('background:')
   })
 })

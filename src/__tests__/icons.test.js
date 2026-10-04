@@ -24,6 +24,11 @@ const REQUIRED = [
   'activity',
   'sun',
   'moon',
+  // 发帖编辑器工具条
+  'smile',
+  'image',
+  'save',
+  'expand',
 ]
 
 describe('图标集', () => {

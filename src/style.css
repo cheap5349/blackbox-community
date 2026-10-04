@@ -2082,7 +2082,7 @@ button {
 }
 
 .write-page-wrap {
-  max-width: 720px;
+  max-width: 1180px;
   margin: 0 auto;
 }
 
@@ -2098,63 +2098,111 @@ button {
   transform: rotate(-90deg);
 }
 
+/* 左写右看：左边编辑区，右边实时预览 + 帮助说明 */
+.write-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 336px;
+  gap: 20px;
+  align-items: start;
+}
+
+.write-shell.is-immersive {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.write-shell.is-immersive .write-side {
+  display: none;
+}
+
 /* 编辑器像一张柔和的纸：留白大一点，边框和阴影都很轻 */
-.write-page {
+.write-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   max-width: none;
-  position: relative;
-  gap: 18px;
-  padding: 28px 30px 24px;
+  padding: 22px 24px 20px;
   border: 1px solid #f2dfe6;
-  border-radius: 24px;
+  border-radius: 22px;
   background: #fffdfbf2;
-  box-shadow: 0 22px 60px #b98a9a1f;
+  box-shadow: 0 20px 54px #b98a9a1a;
   backdrop-filter: blur(14px) saturate(1.05);
 }
 
-.write-page.treehole-write {
-  box-shadow: 0 22px 60px #8d7bc41f;
-}
-
-.write-head {
+/* 顶部标签行：选中的那条带下划线 */
+.write-tabs {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 14px;
-}
-
-.write-head-text {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.write-page h1 {
-  margin: 0;
-  font-size: 26px;
-  letter-spacing: -0.01em;
-}
-
-.write-badge {
-  display: inline-flex;
   align-items: center;
-  flex: none;
-  gap: 6px;
-  max-width: 42%;
-  padding: 6px 12px;
-  border: 1px solid #f0dbdf;
-  border-radius: 999px;
-  background: #fff4f8;
-  color: #b06f88;
-  font-size: 12px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  gap: 22px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid #f4e6ec;
 }
 
-.write-badge.is-anon {
-  border-color: #e0d3f2;
-  background: #f6f0ff;
-  color: #7a63b8;
+.write-tab {
+  position: relative;
+  padding: 8px 2px 12px;
+  border: 0;
+  background: none;
+  color: #a8928a;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.18s;
+}
+
+.write-tab:hover {
+  color: #b06f88;
+}
+
+.write-tab.is-active {
+  color: #2c2226;
+}
+
+.write-tab.is-active::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #e58bb0, #c2417a);
+}
+
+.write-tab:disabled {
+  cursor: default;
+  opacity: 0.65;
+}
+
+.write-tool {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: none;
+  color: #9c838c;
+  cursor: pointer;
+  transition:
+    border-color 0.18s,
+    background 0.18s,
+    color 0.18s;
+}
+
+.write-tool:hover {
+  border-color: #f1dfe6;
+  background: #fff5f9;
+  color: #b06f88;
+}
+
+.write-tool[aria-pressed='true'] {
+  border-color: #e8a9c4;
+  background: #fff0f6;
+  color: #c2417a;
+}
+
+.write-tool-immersive {
+  margin-left: auto;
 }
 
 .write-note {
@@ -2188,18 +2236,16 @@ button {
   gap: 8px;
 }
 
-.write-field-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
+.write-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #8a7370;
 }
 
-.write-label {
-  font-size: 11.5px;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  color: #a8928a;
+.write-label-hint {
+  font-size: 12px;
+  font-weight: 400;
+  color: #b8a49c;
 }
 
 .write-count {
@@ -2209,61 +2255,139 @@ button {
 }
 
 /* 覆盖 .card input/textarea/select 的基础样式，标题要更大、正文要更能写 */
-.write-page .write-title {
-  padding: 14px 16px;
-  font-size: 20px;
+.write-field-title {
+  position: relative;
+}
+
+.write-editor .write-title {
+  padding: 14px 68px 14px 16px;
+  font-size: 19px;
   font-weight: 600;
 }
 
-.write-page .write-body {
-  min-height: 240px;
-  padding: 16px;
-  font-size: 15px;
-  line-height: 1.78;
+.write-field-title .write-count {
+  position: absolute;
+  right: 16px;
+  bottom: 15px;
 }
 
-.write-page .write-select {
+.write-field-select {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.write-editor .write-select {
   appearance: none;
-  padding: 13px 42px 13px 16px;
+  min-width: 180px;
+  padding: 11px 40px 11px 14px;
   cursor: pointer;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23b39a8f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 16px center;
+  background-position: right 14px center;
 }
 
-.write-page .write-title:focus,
-.write-page .write-body:focus,
-.write-page .write-select:focus {
+.write-anon-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px dashed #e6dbf6;
+  border-radius: 14px;
+  background: #faf6ff;
+  color: #6b5591;
+  font-size: 13px;
+}
+
+/* 正文区：输入框和工具条合成一个整体 */
+.write-field-body {
+  gap: 0;
+  border: 1px solid #f1dfe6;
+  border-radius: 18px;
+  background: #fffcfd;
+  overflow: hidden;
+}
+
+.write-editor .write-body {
+  min-height: 300px;
+  padding: 16px 16px 8px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 15px;
+  line-height: 1.78;
+  resize: vertical;
+}
+
+.write-editor .write-title:focus,
+.write-editor .write-select:focus {
   outline: none;
   border-color: #e8a9c4;
   background-color: #fff;
   box-shadow: 0 0 0 4px #ffd9e866;
 }
 
-/* 拖拽上传区：虚线框 + 悬停变粉，拖入时再亮一档 */
+.write-editor .write-body:focus {
+  outline: none;
+  border-color: transparent;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.write-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px 10px;
+  border-top: 1px solid #f7ebf0;
+}
+
+.write-toolbar .write-count {
+  margin-left: auto;
+}
+
+.write-emoji-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
+  gap: 4px;
+  padding: 10px 12px 14px;
+  border-top: 1px solid #f7ebf0;
+  background: #fff8fb;
+}
+
+.write-emoji {
+  padding: 6px 0;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.16s;
+}
+
+.write-emoji:hover {
+  background: #ffeef5;
+}
+
+/* 上传区：虚线框 + 缩略图 + 加号瓦片 */
+.write-field-images {
+  gap: 8px;
+}
+
 .write-drop {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  width: 100%;
-  padding: 20px 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px;
   border: 1.5px dashed #edcfdb;
   border-radius: 18px;
   background: #fffafc;
-  color: #a58d96;
-  font-size: 12.5px;
-  text-align: center;
   transition:
     border-color 0.2s,
-    background 0.2s,
-    transform 0.2s;
-}
-
-.write-drop b {
-  color: #8a6b78;
-  font-size: 14px;
-  font-weight: 600;
+    background 0.2s;
 }
 
 .write-drop:hover {
@@ -2274,55 +2398,84 @@ button {
 .write-drop.is-dragging {
   border-color: #e087b0;
   background: #fff0f6;
-  transform: scale(1.008);
 }
 
-.write-file {
-  display: none;
+.write-drop-note {
+  margin: 0;
+  font-size: 12px;
+  color: #b8a49c;
 }
 
-.write-previews {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+.write-thumbs {
+  display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.write-preview {
+.write-thumb {
   position: relative;
-  aspect-ratio: 1 / 1;
+  width: 92px;
+  height: 92px;
   border: 1px solid #f1dfe6;
-  border-radius: 16px;
+  border-radius: 14px;
   background: #fff6f9;
   overflow: hidden;
 }
 
-.write-preview img {
+.write-thumb img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.write-preview-remove {
+.write-thumb-remove {
   position: absolute;
-  top: 6px;
-  right: 6px;
+  top: 5px;
+  right: 5px;
   display: grid;
   place-items: center;
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border: 0;
   border-radius: 999px;
   background: #2a1f2ab3;
   color: #fff;
+  cursor: pointer;
   transition: background 0.2s;
 }
 
-.write-preview-remove:hover {
+.write-thumb-remove:hover {
   background: #c2417a;
+}
+
+.write-tile-add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 92px;
+  height: 92px;
+  border: 1px dashed #edcfdb;
+  border-radius: 14px;
+  background: #fffdfd;
+  color: #b08d9a;
+  font-size: 11.5px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    color 0.2s;
+}
+
+.write-tile-add:hover {
+  border-color: #e8a9c4;
+  background: #fff5f9;
+  color: #c2417a;
 }
 
 .write-message {
@@ -2335,17 +2488,64 @@ button {
   font-size: 13px;
 }
 
+.write-file {
+  display: none;
+}
+
 .write-actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 14px;
-  margin-top: 2px;
-  padding-top: 18px;
+  gap: 10px;
+  padding-top: 16px;
   border-top: 1px solid #f4e6ec;
 }
 
-.write-hint {
+.write-actions-gap {
   flex: 1;
+}
+
+.write-draft {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 14px;
+  border: 1px solid #f0dbdf;
+  border-radius: 999px;
+  background: #fff;
+  color: #8a6b78;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    color 0.2s;
+}
+
+.write-draft:hover {
+  border-color: #e8a9c4;
+  color: #c2417a;
+}
+
+.write-draft-state {
+  font-size: 12px;
+  color: #b8a49c;
+}
+
+.write-draft-discard {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #b8a49c;
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.write-draft-discard:hover {
+  color: #c2417a;
+}
+
+.write-hint {
   font-size: 12.5px;
   color: #b8a49c;
 }
@@ -2365,6 +2565,130 @@ button {
 /* 禁用时别再扫光，否则像"可以点" */
 .write-submit:disabled::after {
   display: none;
+}
+
+/* 右栏：实时预览与帮助说明 */
+.write-side {
+  position: sticky;
+  top: 88px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.write-side-title {
+  margin: 0 0 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: #a8928a;
+}
+
+.write-preview-card,
+.write-help {
+  padding: 18px;
+  border-radius: 20px;
+}
+
+/* 预览里是"帖子长什么样"，不要再带卡片自己的边框和阴影 */
+.write-preview-card .post-card {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  transform: none;
+}
+
+.preview-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.preview-author {
+  font-size: 13.5px;
+  color: #33272c;
+}
+
+.preview-sub {
+  margin: 0;
+  font-size: 11.5px;
+  color: #b8a49c;
+}
+
+.preview-community {
+  color: #b06f88;
+}
+
+.preview-content {
+  margin-top: 10px;
+}
+
+.preview-title {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  color: #2c2226;
+}
+
+.preview-body {
+  margin: 6px 0 0;
+  overflow-wrap: anywhere;
+  color: #6b5a60;
+  font-size: 13.5px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.preview-cover {
+  margin-top: 10px;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.preview-cover img {
+  display: block;
+  width: 100%;
+}
+
+.write-help-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.write-help-list li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #6b5a60;
+  font-size: 12.5px;
+}
+
+.write-help-list li span {
+  margin-left: auto;
+  color: #9c838c;
+}
+
+.write-help-list kbd {
+  padding: 2px 7px;
+  border: 1px solid #eedde4;
+  border-radius: 6px;
+  background: #fff;
+  color: #8a7370;
+  font-family: inherit;
+  font-size: 11.5px;
+}
+
+.write-help-note {
+  margin: 12px 0 0;
+  color: #a8928a;
+  font-size: 12px;
+  line-height: 1.65;
 }
 
 .communities-page {
@@ -5857,10 +6181,6 @@ html[data-scrolling] .reading-bar {
   background: linear-gradient(135deg, #d9cdf0, #eed8cf);
 }
 
-.treehole-write {
-  border-color: #e3d6f0;
-}
-
 /* 深色主题：评论区与树洞 */
 html[data-theme='dark'] .detail-comments {
   background: #16132aeb;
@@ -5924,10 +6244,6 @@ html[data-theme='dark'] .treehole-badge {
 
 html[data-theme='dark'] .post-avatar.mask {
   background: linear-gradient(135deg, #2e2550, #3a2a33);
-}
-
-html[data-theme='dark'] .treehole-write {
-  border-color: #2f2850;
 }
 
 /* ===== 主页诗句屏：占满首屏只显示诗句，下滑后才出现下方模块 ===== */
@@ -7330,22 +7646,40 @@ html[data-theme='dark'] .demo-notice {
 }
 
 /* ===== 发帖界面：深色主题 ===== */
-html[data-theme='dark'] .write-page {
+html[data-theme='dark'] .write-editor,
+html[data-theme='dark'] .write-preview-card,
+html[data-theme='dark'] .write-help {
   border-color: #2c2545;
   background: #14112af2;
-  box-shadow: 0 22px 60px #00000059;
+  box-shadow: 0 20px 54px #00000059;
 }
 
-html[data-theme='dark'] .write-badge {
+html[data-theme='dark'] .write-tabs {
+  border-bottom-color: #2a2444;
+}
+
+html[data-theme='dark'] .write-tab {
+  color: #8d83ab;
+}
+
+html[data-theme='dark'] .write-tab.is-active {
+  color: #f0e6f2;
+}
+
+html[data-theme='dark'] .write-tool {
+  color: #9d93bb;
+}
+
+html[data-theme='dark'] .write-tool:hover {
   border-color: #3a3355;
   background: #1f1a38;
-  color: #d3b9d8;
+  color: #e0b6d0;
 }
 
-html[data-theme='dark'] .write-badge.is-anon {
-  border-color: #3b3163;
-  background: #1d1836;
-  color: #bfaef0;
+html[data-theme='dark'] .write-tool[aria-pressed='true'] {
+  border-color: #6b4f7d;
+  background: #241c40;
+  color: #f0a9bf;
 }
 
 html[data-theme='dark'] .write-note {
@@ -7361,31 +7695,57 @@ html[data-theme='dark'] .write-note-anon {
 }
 
 html[data-theme='dark'] .write-label,
+html[data-theme='dark'] .write-label-hint,
 html[data-theme='dark'] .write-count,
-html[data-theme='dark'] .write-hint {
+html[data-theme='dark'] .write-hint,
+html[data-theme='dark'] .write-draft-state,
+html[data-theme='dark'] .write-drop-note,
+html[data-theme='dark'] .write-help-note,
+html[data-theme='dark'] .preview-sub {
   color: #8d83ab;
 }
 
-html[data-theme='dark'] .write-page .write-select {
+html[data-theme='dark'] .write-editor .write-select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238d83ab' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
 }
 
-html[data-theme='dark'] .write-page .write-title:focus,
-html[data-theme='dark'] .write-page .write-body:focus,
-html[data-theme='dark'] .write-page .write-select:focus {
+html[data-theme='dark'] .write-editor .write-title:focus,
+html[data-theme='dark'] .write-editor .write-select:focus {
   border-color: #6b4f7d;
   background-color: #1a1533;
   box-shadow: 0 0 0 4px #ffd9e81f;
+}
+
+html[data-theme='dark'] .write-field-body {
+  border-color: #2f2850;
+  background: #171329;
+}
+
+html[data-theme='dark'] .write-editor .write-body {
+  color: #ece7f6;
+}
+
+html[data-theme='dark'] .write-editor .write-body:focus {
+  background-color: transparent;
+}
+
+html[data-theme='dark'] .write-toolbar {
+  border-top-color: #2a2444;
+}
+
+html[data-theme='dark'] .write-emoji-panel {
+  border-top-color: #2a2444;
+  background: #1a1533;
+}
+
+html[data-theme='dark'] .write-emoji:hover {
+  background: #241c40;
 }
 
 html[data-theme='dark'] .write-drop {
   border-color: #3a3355;
   background: #171329;
   color: #9d93bb;
-}
-
-html[data-theme='dark'] .write-drop b {
-  color: #c9bfe6;
 }
 
 html[data-theme='dark'] .write-drop:hover {
@@ -7398,9 +7758,66 @@ html[data-theme='dark'] .write-drop.is-dragging {
   background: #221a3d;
 }
 
-html[data-theme='dark'] .write-preview {
+html[data-theme='dark'] .write-thumb {
   border-color: #2f2850;
   background: #171329;
+}
+
+html[data-theme='dark'] .write-tile-add {
+  border-color: #3a3355;
+  background: #191534;
+  color: #9d93bb;
+}
+
+html[data-theme='dark'] .write-tile-add:hover {
+  border-color: #6b4f7d;
+  background: #221a3d;
+  color: #f0a9bf;
+}
+
+html[data-theme='dark'] .write-draft {
+  border-color: #2f2850;
+  background: #191534;
+  color: #c9bfe6;
+}
+
+html[data-theme='dark'] .write-draft:hover {
+  border-color: #6b4f7d;
+  color: #f0a9bf;
+}
+
+html[data-theme='dark'] .write-draft-discard {
+  color: #8d83ab;
+}
+
+html[data-theme='dark'] .write-anon-line {
+  border-color: #3a2f5e;
+  background: #1a1533;
+  color: #c6b8ee;
+}
+
+html[data-theme='dark'] .preview-title,
+html[data-theme='dark'] .preview-author {
+  color: #f0e6f2;
+}
+
+html[data-theme='dark'] .preview-body,
+html[data-theme='dark'] .write-help-list li {
+  color: #b8aecb;
+}
+
+html[data-theme='dark'] .preview-community {
+  color: #e0a4c0;
+}
+
+html[data-theme='dark'] .write-help-list li span {
+  color: #8d83ab;
+}
+
+html[data-theme='dark'] .write-help-list kbd {
+  border-color: #2f2850;
+  background: #191534;
+  color: #c9bfe6;
 }
 
 html[data-theme='dark'] .write-message {
@@ -7415,40 +7832,52 @@ html[data-theme='dark'] .write-actions {
 
 /* ===== 发帖界面：窄屏 ===== */
 @media (max-width: 640px) {
-  .write-page {
-    padding: 22px 18px 18px;
-    border-radius: 20px;
+  .write-shell {
+    padding: 18px 14px 16px;
+    border-radius: 18px;
   }
 
-  .write-head {
+  .write-tabs {
+    gap: 14px;
+  }
+
+  .write-editor .write-title {
+    padding: 12px 58px 12px 14px;
+    font-size: 17px;
+  }
+
+  .write-editor .write-body {
+    min-height: 200px;
+  }
+
+  .write-thumb,
+  .write-tile-add {
+    width: 74px;
+    height: 74px;
+  }
+
+  .write-field-select {
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
+    gap: 6px;
   }
 
-  .write-badge {
-    max-width: 100%;
-  }
-
-  .write-page .write-title {
-    font-size: 18px;
-  }
-
-  .write-page .write-body {
-    min-height: 190px;
-  }
-
-  .write-previews {
-    grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));
+  .write-editor .write-select {
+    width: 100%;
+    min-width: 0;
   }
 
   .write-actions {
-    flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
+  }
+
+  .write-draft-state {
+    flex-basis: 100%;
   }
 
   .write-hint {
     flex-basis: 100%;
+    order: 3;
   }
 
   .write-submit {
@@ -7459,7 +7888,10 @@ html[data-theme='dark'] .write-actions {
 
 @media (prefers-reduced-motion: reduce) {
   .write-drop,
-  .write-preview-remove {
+  .write-tab,
+  .write-tool,
+  .write-tile-add,
+  .write-thumb-remove {
     transition: none;
   }
 
