@@ -274,4 +274,46 @@ describe('样式表守卫', () => {
     expect(notice, '演示角标要固定在视口，不能随文档滚动').toContain('position: fixed')
     expect(notice, '演示角标不能挡住下面的按钮').toContain('pointer-events: none')
   })
+
+  it('发帖界面是一张柔和的纸：圆角 + 轻阴影', () => {
+    const page = ruleBlock(css, '\n.write-page {')
+
+    expect(page, '找不到 .write-page 规则').not.toBe('')
+    expect(page, '编辑器要有圆角').toContain('border-radius')
+    expect(page, '编辑器要有柔和投影，不能是硬边框卡片').toContain('box-shadow')
+  })
+
+  it('配图用拖拽区 + 缩略图网格，且不再有视频入口的样式残留', () => {
+    const drop = ruleBlock(css, '\n.write-drop {')
+
+    expect(drop, '找不到拖拽上传区 .write-drop 规则').not.toBe('')
+    expect(drop, '上传区要一眼看出可以拖东西进来').toContain('dashed')
+
+    const previews = ruleBlock(css, '\n.write-previews {')
+
+    expect(previews, '找不到缩略图容器 .write-previews 规则').not.toBe('')
+    expect(previews, '缩略图要用网格排布').toContain('grid')
+
+    expect(css, '旧的 .write-target 提示条样式没清干净').not.toContain('.write-target')
+  })
+
+  it('发布按钮有真正的禁用态，禁用时不会继续扫光', () => {
+    const disabled = ruleBlock(css, '.write-submit:disabled {')
+
+    expect(disabled, '找不到发布按钮禁用态').not.toBe('')
+    expect(disabled, '禁用态要明显变淡').toContain('opacity')
+    expect(disabled, '禁用时鼠标不该显示成可点').toContain('cursor: not-allowed')
+
+    const sweepOff = ruleBlock(css, '.write-submit:disabled::after {')
+
+    expect(sweepOff, '禁用时仍保留了扫光动画').not.toBe('')
+    expect(sweepOff).toContain('display: none')
+  })
+
+  it('深色主题下发帖界面有自己的底色，不是白纸', () => {
+    const dark = ruleBlock(css, "html[data-theme='dark'] .write-page {")
+
+    expect(dark, '找不到深色主题的 .write-page 覆盖').not.toBe('')
+    expect(dark).toContain('background:')
+  })
 })
