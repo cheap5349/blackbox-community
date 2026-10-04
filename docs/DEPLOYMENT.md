@@ -90,6 +90,24 @@ server {
 
 前端由 Express 直接托管 `dist/`（含 SPA fallback），无需再单独配置静态站点；只需确保 `/api`、`/uploads`、`/videos` 与页面路由都转到同一个 3000 端口。
 
+## 方式 C：GitHub Pages 静态演示（只给人看效果）
+
+GitHub Pages 只能托管静态文件，本项目后端是 Express + MySQL，所以这条路径发布的是**演示版**：界面（开场动画、主题背景、图标、性能徽标、唱片机）完整，数据来自 `src/demo.js` 内置的示例帖，写入操作返回一句可读提示。线上地址：https://cheap5349.github.io/blackbox-community/
+
+工作流 `.github/workflows/pages.yml` 已经写好，`main` 分支一推送就自动构建并发布；首次需要手动开启一次 Pages：
+
+```bash
+gh api --method POST repos/<owner>/<repo>/pages -f build_type=workflow
+```
+
+要点：
+
+- `VITE_DEMO=1` 打开演示模式（`src/api.js` 把请求交给 `demoApi`，不再打 `/api`）。
+- `VITE_BASE_PATH=/<仓库名>/` 决定 `vite.config.js` 的 `base`；`src/router.js` 用 `import.meta.env.BASE_URL` 建 history，否则站内跳转会掉到域名根目录。
+- 发布前 `cp dist/index.html dist/404.html`：Pages 对未知路径返回 `404.html`，深链接才能落到 SPA 外壳（HTTP 状态码仍是 404，浏览器里正常渲染）。
+- `touch dist/.nojekyll`：避免 Jekyll 处理 `assets/` 下的文件。
+- 演示版里的音频走 `/<仓库名>/audio/…`；`public/audio/bgm.mp3` 因版权原因未入库，线上听不到音乐属预期。
+
 ## 健康检查与监控
 
 - 存活：`GET /api/health` → `{ ok: true }`，不查数据库，适合做容器 liveness。

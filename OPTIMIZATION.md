@@ -71,7 +71,7 @@
 - 举报闭环：`reports` 表、用户端提交、管理端「举报」页签（待处理/已忽略/已删除 + 搜索）
 - 用户可编辑自己的帖子（个人中心与详情页入口）
 - 前端拆分：`App.vue` 瘦身为外壳，10 个视图组件 + `store.js` + composables，路由懒加载
-- 测试：后端 `node:test + supertest` 59 条、前端 `vitest` 186 条（15 个文件，含样式守卫与模板编译守卫），全绿
+- 测试：后端 `node:test + supertest` 59 条、前端 `vitest` 201 条（17 个文件，含样式守卫与模板编译守卫），全绿
 - 工程质量：ESLint 9 flat config + Prettier，`lint`/`lint:fix`/`format`/`format:check` 脚本；GitHub Actions 在 push/PR 上跑格式检查、lint、前后端测试与生产构建
 - 文档体系：`README.md` + `docs/ARCHITECTURE.md`、`docs/CONFIGURATION.md`、`docs/API.md`、`docs/DEPLOYMENT.md`、`docs/BACKUP-RESTORE.md`、`docs/CONTRIBUTING.md`
 - 部署：Dockerfile + docker-compose + PM2 配置
@@ -91,6 +91,13 @@
 - **循环接缝淡化**：`src/bgm.js` 新增 `LOOP_FADE_SECONDS = 1.8` 与 `loopGain(currentTime, duration, fade)`（接缝两端线性淡出/淡入；片段短于 `fade * 2` 或时长未知时返回 1），`useBgm.js` 用 `applyLoopGain()` 配合 rAF 补帧跟随播放推进（`timeupdate` 只有约 4Hz，直接在事件里改音量会在接缝处听出阶梯）
 - 说明：仓库自带的 `public/audio/bgm.mp3` 实测只有 **27.26 秒**（1136 帧、128 kbps、48 kHz），单曲循环因此每 27 秒回到开头；淡化让接缝不再像"重新播放"，但要听长音乐需替换为完整曲目或配多首 + `playlist.json`
 - 测试：`utils.test.js` 新增「漫天星河与落英缤纷的生成器」（星尘点数与格式、银河带聚集比例、流星角度与左右分布、花瓣变量范围），`styles.test.js` 守卫粉色下限、洗层透明度与 DOM 顺序、星空分层与 `meteorFall` / `petalFall` 变量、模板数量下限、滚动暂停仍在顶层；`bgm.test.js` / `useBgm.test.js` 覆盖接缝淡化
+
+### J. 部署到 GitHub 与静态演示模式
+- **公开地址**：https://cheap5349.github.io/blackbox-community/ （仓库 https://github.com/cheap5349/blackbox-community ，`main` 分支推送即自动发布）
+- **为什么要"演示模式"**：GitHub Pages 只能托管静态文件，本项目却是 Express + MySQL，直接发上去会满屏报错。新增 `src/demo.js`（14 条示例帖 / 5 个社区 / 6 条评论 + 与 `server/routes/posts.js` 同形状的字段，含 hot 与 featured 排序、社区过滤、关键词搜索、分页），`src/api.js` 在 `DEMO_MODE` 下把它当作 `api()` 的实现；写入类请求统一抛一句可读中文提示，`DemoNotice` 角标说明这是只读演示
+- **子路径部署**：`vite.config.js` 读 `VITE_BASE_PATH` 决定 `base`；`router` 用 `createWebHistory(import.meta.env.BASE_URL)`；`bgm.js` 的清单与兜底曲目路径、演示版性能徽标的延迟探测目标也都按 `BASE_URL` 拼装，否则会 404
+- **工作流**：`.github/workflows/pages.yml` 用 `VITE_DEMO=1` 构建，`cp dist/index.html dist/404.html` 让深链接能落到 SPA 外壳，`touch dist/.nojekyll` 避免 Jekyll 忽略 `assets/` 下划线文件；`index.html` 顺手补全了 doctype / viewport / title / favicon（此前只有两行）
+- **顺带修掉的 CI 假失败**：`node --test ... "server/test/*.test.js"` 的引号让 Node 20 把 glob 当字面路径（`Could not find`），后端 59 项在 CI 上从未真正跑过；去掉引号并把两个工作流提到 Node 22 后，CI 与本地（对 MySQL 实测）均 59 项全通过
 
 ---
 
@@ -119,7 +126,7 @@
 | 项 | 现状 | 建议 | 验收标准 |
 |---|---|---|---|
 | 前端拆分 | ✅ 已完成（10 视图 + store + composables） | — | 单文件 < 400 行 |
-| 测试 | ✅ 后端 59 + 前端 186 条（15 个文件） | 补管理后台与通知的组件级测试 | `npm test` 全绿 |
+| 测试 | ✅ 后端 59 + 前端 201 条（17 个文件） | 补管理后台与通知的组件级测试 | `npm test` 全绿 |
 | CI | ✅ `.github/workflows/ci.yml`：MySQL service → 格式检查 → lint → 前后端测试 → 生产构建 | — | 每个 PR 自动跑全量门禁 |
 | 错误处理统一 | 大量 DB 异常归为「数据库未连接」 | 结构化 `{ code, message }`（`api.js` 已透传 `code`），服务端记日志 | 每个接口错误码可定位到真实原因 |
 | Lint / Format | ✅ ESLint 9 flat config + Prettier（`lint`/`lint:fix`/`format`/`format:check`） | 可按需再接入 stylelint 检查 CSS | `npm run lint` 与 `format:check` 通过 |
